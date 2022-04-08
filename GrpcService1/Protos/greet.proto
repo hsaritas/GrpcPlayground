@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "GrpcService1";
+
+package MongoSubscription;
+
+// The greeting service definition.
+service MongoSubscription {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetMongoStream(MongoSubscriptionRequest) returns (stream MongoSubscriberEvent);
+}
+
+message MongoSubscriptionRequest {
+  int32 ClientId = 1;
+  string FilterMethod=2;
+}
+
+message MongoSubscriberEvent {
+	int32 Id = 1;  
+	string Message = 2;
+	google.protobuf.Timestamp dateTimeStamp = 3;
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+  string name=2;
+}
