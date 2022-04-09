@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GrpcService1
 {
@@ -26,12 +22,13 @@ namespace GrpcService1
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseMiddleware<RequestMiddleware>();
             app.UseRouting();
-
+            //app.UseGrpcWeb();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<GreeterService>();
+                //endpoints.MapGrpcService<GreeterService>().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
                 {
