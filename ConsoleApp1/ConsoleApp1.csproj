@@ -13,7 +13,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MongoDB.Bson" Version="2.15.0" />
-	<Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
+	  <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\GrpcStream.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

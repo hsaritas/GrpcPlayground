@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "ConsoleApp1";
+
+package GrpcStream;
+
+// The greeting service definition.
+service GrpcStream {
+  rpc GetMongoStream(MongoStreamRequest) returns (stream MongoStreamResponse);
+}
+
+message MongoStreamRequest {
+  string MethodFilter = 1;
+}
+
+message MongoStreamResponse {
+	string JsonData = 1;
+}
+
