@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/timestamp.proto";
 option csharp_namespace = "ConsoleApp1";
 
 package GrpcStream;
@@ -10,10 +10,13 @@ service GrpcStream {
 }
 
 message MongoStreamRequest {
-  string MethodFilter = 1;
+  string Database = 1;
+  string Collection = 2;
+  string MethodFilter = 3;
 }
 
 message MongoStreamResponse {
 	string JsonData = 1;
+	google.protobuf.Timestamp DateTimeStamp = 2;
 }
 

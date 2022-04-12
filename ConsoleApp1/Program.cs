@@ -22,15 +22,24 @@ namespace ConsoleApp1
         {
             try
             {
-                using var channel = GrpcChannel.ForAddress("https://localhost:44381/");
+                using var channel = GrpcChannel.ForAddress("https://gtsraporapi.dstrace.com/");
                 var client = new GrpcStream.GrpcStreamClient(channel);
                 var cts = new CancellationTokenSource();
-                using var streamingCall = client.GetMongoStream(new  MongoStreamRequest() { MethodFilter = "" }, cancellationToken: cts.Token);
+                using var streamingCall = client.GetMongoStream(new  MongoStreamRequest() { MethodFilter = "satis-yap", Database="DSGTS",  Collection= "DS.GTS.API" }, cancellationToken: cts.Token);
 
                 while (streamingCall.ResponseStream.MoveNext(cts.Token).Result)
                 {
-                    BsonDocument doc = BsonSerializer.Deserialize<BsonDocument>(streamingCall.ResponseStream.Current.JsonData);
-                    Console.WriteLine($"{doc["Properties"]["HttpLogModel"]["Request"]["Path"]}");
+                    try
+                    {
+                        BsonDocument doc = BsonSerializer.Deserialize<BsonDocument>(streamingCall.ResponseStream.Current.JsonData);
+                        Console.WriteLine($"{streamingCall.ResponseStream.Current.DateTimeStamp.ToDateTime().ToLocalTime()} {doc["Properties"]["HttpLogModel"]["Request"]["Path"]}");
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($"Hata:{ex.Message}, Data:{streamingCall.ResponseStream.Current.JsonData}");
+                    }                
                 }
             }
             catch (Exception ex)
