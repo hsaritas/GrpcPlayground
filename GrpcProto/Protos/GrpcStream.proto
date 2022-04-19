@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-option csharp_namespace = "ConsoleApp1";
+option csharp_namespace = "GrpcProto";
 
 package GrpcStream;
 

@@ -1,5 +1,6 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using GrpcProto;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;

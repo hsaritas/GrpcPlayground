@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "GrpcProto.Merkez";
+
+package MerkezProto;
+
+service MerkezSubscription {
+  rpc Ping (PingRequest) returns (PingResponse);
+}
+
+message PingRequest {
+  string RequestStr = 1;  
+}
+
+message PingResponse {
+  string ResponseStr = 1;
+}
