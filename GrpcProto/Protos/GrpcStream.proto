@@ -1,10 +1,9 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-option csharp_namespace = "GrpcProto";
+option csharp_namespace = "DS.GTS.Application";
 
 package GrpcStream;
 
-// The greeting service definition.
 service GrpcStream {
   rpc GetMongoStream(MongoStreamRequest) returns (stream MongoStreamResponse);
 }
@@ -19,4 +18,3 @@ message MongoStreamResponse {
 	string JsonData = 1;
 	google.protobuf.Timestamp DateTimeStamp = 2;
 }
-

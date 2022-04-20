@@ -6,7 +6,8 @@ option csharp_namespace = "GrpcProto.Saha";
 package SahaProto;
 
 service SahaSubscription {
-  rpc Ping (PingRequest) returns (PingResponse);
+	rpc Ping (PingRequest) returns (PingResponse);  
+	rpc PingServerStream (PingRequest) returns (stream PingResponse);
 }
 
 message PingRequest {

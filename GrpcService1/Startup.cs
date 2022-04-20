@@ -1,14 +1,9 @@
-﻿using Grpc.AspNetCore.Server;
-using Grpc.Net.Client;
-using GrpcProto.Saha;
-using GrpcService1.Services;
+﻿using GrpcService1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading;
 
 namespace GrpcService1
 {
