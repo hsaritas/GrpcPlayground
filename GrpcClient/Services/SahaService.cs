@@ -8,7 +8,7 @@ namespace GrpcClient.Services
     {
         public override async Task<PingResponse> Ping(PingRequest request, ServerCallContext context)
         {
-            return new PingResponse() { ResponseStr = $"PONG from SahaService [{request.RequestStr}]" };
+            return new PingResponse() { ResponseStr = $"PONG from SahaService [{request.RequestStr}] " };
         }
         public override async Task PingServerStream(PingRequest request, IServerStreamWriter<PingResponse> responseStream, ServerCallContext context)
         {
