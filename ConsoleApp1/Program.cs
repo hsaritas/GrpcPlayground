@@ -18,8 +18,8 @@ namespace ConsoleApp1
         {
 
             //Task.Run(() => GrpcMerkez(args)).Wait();
-            //Task.Run(() => GrpcSaha(args)).Wait();
-            Task.Run(() => GrpcGTS(args)).Wait();
+            Task.Run(() => GrpcSaha(args)).Wait();
+            //Task.Run(() => GrpcGTS(args)).Wait();
             Console.WriteLine($"Press any key :)");
             Console.ReadKey();
         }
@@ -50,28 +50,33 @@ namespace ConsoleApp1
                 httpHandler.ServerCertificateCustomValidationCallback =
                     HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                using var channel = GrpcChannel.ForAddress("https://localhost:44327", new GrpcChannelOptions { HttpHandler = new GrpcWebHandler(httpHandler) });
-                var client = new SahaSubscription.SahaSubscriptionClient(channel);
+                //using var channel = GrpcChannel.ForAddress("https://localhost:44327/", new GrpcChannelOptions { HttpHandler = new GrpcWebHandler(httpHandler) });
+                //using var channel = GrpcChannel.ForAddress("https://localhost:44327/");
+                
+                using var channel = GrpcChannel.ForAddress("https://localhost:55623/", new GrpcChannelOptions { HttpHandler = new GrpcWebHandler(httpHandler) });
+                //using var channel = GrpcChannel.ForAddress("https://localhost:55623/");
+
+                var client = new GrpcStreamSahaSubscription.GrpcStreamSahaSubscriptionClient(channel);
                 var cts = new CancellationTokenSource();
                 
                 Console.WriteLine($"Single Call");
-                var pingcall = client.Ping(new GrpcProto.Saha.PingRequest() { RequestStr = "Ping From Client" }, cancellationToken: cts.Token);
-                Console.WriteLine($"{pingcall.ResponseStr}");
+                var pingcall = client.BasicRequest(new GrpcProto.Saha.SahaRequest() { PageIndex = 0, PageSize = 10, IsDescending = true }, cancellationToken: cts.Token);
+                Console.WriteLine($"{pingcall.Message}");
 
                 Console.WriteLine($"//Server Side Streaming");
-                var pingStramCall = client.PingServerStream(new GrpcProto.Saha.PingRequest() { RequestStr = "Ping From Client" }, cancellationToken: cts.Token);
+                var pingStramCall = client.StreamingResponse(new GrpcProto.Saha.SahaRequest() { PageIndex = 0, PageSize = 10, IsDescending = true }, cancellationToken: cts.Token);
                 while (pingStramCall.ResponseStream.MoveNext(cts.Token).Result)
-                    Console.WriteLine($"{pingStramCall.ResponseStream.Current.ResponseStr}");
+                    Console.WriteLine($"{pingStramCall.ResponseStream.Current.Message}");
 
                 Console.WriteLine($"//Bidirectional Streaming");
-                using var pingBothStreamCall = client.PingBothStream();
+                using var pingBothStreamCall = client.StreamingBoth();
                 for (int i = 0; i < 15; i++)
                 {
-                    await pingBothStreamCall.RequestStream.WriteAsync(new GrpcProto.Saha.PingRequest() { RequestStr = $"Ping from client #{i}" });
+                    await pingBothStreamCall.RequestStream.WriteAsync(new GrpcProto.Saha.SahaRequest() { PageIndex = i, PageSize = 10, IsDescending = true });
                 }
                 await pingBothStreamCall.RequestStream.CompleteAsync();
                 while (pingBothStreamCall.ResponseStream.MoveNext(cts.Token).Result)
-                    Console.WriteLine($"{pingBothStreamCall.ResponseStream.Current.ResponseStr}");
+                    Console.WriteLine($"{pingBothStreamCall.ResponseStream.Current.Message}");
 
             }
             catch (Exception ex)

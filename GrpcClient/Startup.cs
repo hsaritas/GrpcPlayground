@@ -25,10 +25,11 @@ namespace GrpcClient
             }
 
             app.UseRouting();
-            app.UseGrpcWeb();
+            //app.UseGrpcWeb();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<SahaService>().EnableGrpcWeb();
+                //endpoints.MapGrpcService<SahaService>().EnableGrpcWeb();
+                endpoints.MapGrpcService<SahaService>();
 
                 endpoints.MapGet("/", async context =>
                 {

@@ -3,18 +3,39 @@ import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "GrpcProto.Saha";
 
-package SahaProto;
+package GrpcStreamSahaProto;
 
-service SahaSubscription {
-	rpc Ping (PingRequest) returns (PingResponse);  
-	rpc PingServerStream (PingRequest) returns (stream PingResponse);
-	rpc PingBothStream (stream PingRequest) returns (stream PingResponse);
+service GrpcStreamSahaSubscription {
+  // Unary
+  rpc BasicRequest (SahaRequest) returns (SahaResponse);
+
+  // Request streaming
+  rpc StreamingRequest (stream SahaRequest) returns (SahaResponse);
+
+  // Response streaming
+  rpc StreamingResponse (SahaRequest) returns (stream SahaResponse);
+
+  rpc StreamingBoth (stream SahaRequest) returns (stream SahaResponse);
+
+   rpc TaskManager (TaskManagerRequest) returns (TaskManagerResponse);
 }
 
-message PingRequest {
-  string RequestStr = 1;  
+message SahaRequest {
+    int32 pageIndex = 1;
+    int32 pageSize = 2;
+    bool isDescending = 3;
 }
 
-message PingResponse {
-  string ResponseStr = 1;
+message SahaResponse {
+  string message = 1;
+}
+
+message TaskManagerRequest{
+    int32 TickerTime = 1;
+}
+
+message TaskManagerResponse{
+    double CPU = 1;
+    double RAM = 2;
+    double DISC = 3;
 }

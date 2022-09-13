@@ -5,34 +5,51 @@ using System.Threading.Tasks;
 
 namespace GrpcClient.Services
 {
-    public class SahaService : SahaSubscription.SahaSubscriptionBase
+    public class SahaService : GrpcStreamSahaSubscription.GrpcStreamSahaSubscriptionBase
     {
-        public override async Task<PingResponse> Ping(PingRequest request, ServerCallContext context)
+        public override async Task<SahaResponse> BasicRequest(SahaRequest request, ServerCallContext context)
         {
-            return new PingResponse() { ResponseStr = $"PONG from SahaService [{request.RequestStr}] " };
+            return new SahaResponse() { Message = "basic response" };
         }
 
-        public override async Task PingBothStream(IAsyncStreamReader<PingRequest> requestStream, IServerStreamWriter<PingResponse> responseStream, ServerCallContext context)
+        public override async Task<SahaResponse> StreamingRequest(IAsyncStreamReader<SahaRequest> requestStream, ServerCallContext context)
         {
-            var requests = new List<PingRequest>();
+            var requests = new List<SahaRequest>();
             while (await requestStream.MoveNext()
                 && !context.CancellationToken.IsCancellationRequested)
             {
-                requests.Add(requestStream.Current);               
+                requests.Add(requestStream.Current);
             }
 
-            for (int i = 0; i < requests.Count; i++)
+            return new SahaResponse() { Message = $"request stream received count:[{requests.Count}]" };
+        }
+
+        public override async Task StreamingResponse(SahaRequest request, IServerStreamWriter<SahaResponse> responseStream, ServerCallContext context)
+        {
+            for (int i = 0; i < 5; i++)
             {
-                await responseStream.WriteAsync(new PingResponse() { ResponseStr = $"PONG #{i} from SahaService [{requests[i].RequestStr}]" });
+                await responseStream.WriteAsync(new SahaResponse() { Message = $"response # [{i}]" });
             }
         }
-        public override async Task PingServerStream(PingRequest request, IServerStreamWriter<PingResponse> responseStream, ServerCallContext context)
+
+        public override async Task StreamingBoth(IAsyncStreamReader<SahaRequest> requestStream, IServerStreamWriter<SahaResponse> responseStream, ServerCallContext context)
         {
-            for (int i = 0; i < 5; i++) 
+            var requests = new List<SahaRequest>();
+            while (await requestStream.MoveNext()
+                && !context.CancellationToken.IsCancellationRequested)
             {
-                await responseStream.WriteAsync(new PingResponse() { ResponseStr = $"PONG #{i} from SahaService [{request.RequestStr}]" } );
+                requests.Add(requestStream.Current);
             }
-            
+
+            for (int i = 0; i < 5; i++)
+            {
+                await responseStream.WriteAsync(new SahaResponse() { Message = $"request stream received count:[{requests.Count}] response # [{i}]" });
+            }
+        }
+
+        public override async Task<TaskManagerResponse> TaskManager(TaskManagerRequest request, ServerCallContext context)
+        {
+            return new TaskManagerResponse() { CPU = 1, DISC = 2, RAM = 3 };
         }
     }
 }
