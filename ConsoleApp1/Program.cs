@@ -1,15 +1,14 @@
-﻿using Grpc.Net.Client;
+﻿using DS.GTS.Application;
+using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using GrpcProto.Merkez;
 using GrpcProto.Saha;
-using GrpcProto;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DS.GTS.Application;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 
 namespace ConsoleApp1
 {
@@ -19,8 +18,8 @@ namespace ConsoleApp1
         {
 
             //Task.Run(() => GrpcMerkez(args)).Wait();
-            Task.Run(() => GrpcSaha(args)).Wait();
-            //Task.Run(() => GrpcGTS(args)).Wait();
+            //Task.Run(() => GrpcSaha(args)).Wait();
+            Task.Run(() => GrpcGTS(args)).Wait();
             Console.WriteLine($"Press any key :)");
             Console.ReadKey();
         }
@@ -86,10 +85,10 @@ namespace ConsoleApp1
         {
             try
             {
-                //using var channel = GrpcChannel.ForAddress("https://gtsraporapi.dstrace.com/");
-                using var channel = GrpcChannel.ForAddress("https://localhost:44325/");
+                using var channel = GrpcChannel.ForAddress("https://gtsraporapi.dstrace.com/");
+                //using var channel = GrpcChannel.ForAddress("http://localhost:55620/");
                 
-                var client = new DS.GTS.Application.GrpcStream.GrpcStreamClient(channel);
+                var client = new GrpcStream.GrpcStreamClient(channel);
 
                 var cts = new CancellationTokenSource();
                 using var streamingCall = client.GetMongoStream(new MongoStreamRequest() { MethodFilter = "", Database = "DSGTS", Collection = "DS.GTS.API" }, cancellationToken: cts.Token);
